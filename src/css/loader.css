@@ -1,3 +1,19 @@
+
+.loader {
+    margin-bottom: 16px;
+
+    text-align: center;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 150%;
+    letter-spacing: 0.04em;
+    color: #2e2f42;
+}
+
+.is-hidden {
+    display: none;
+}
+
 [data-loader] {
   position: fixed;
   top: 50%;
@@ -14,6 +30,7 @@
   color: #4e75ff;
   animation: fill 1s ease-in infinite alternate;
 }
+
 .loader::before , .loader::after {
   content: '';
   position: absolute;
@@ -36,4 +53,3 @@
  100%{ box-shadow: 0 0 0 10px inset }
 }
   
-
