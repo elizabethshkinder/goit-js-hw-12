@@ -2,7 +2,7 @@ import iziToast from "izitoast";
 import "izitoast/dist/css/iziToast.min.css";
 
 import { getImagesByQuery } from "./js/pixabay-api.js";
-import {createGallery, clearGallery, showLoader, hideLoader, showLoadMoreButton, hideLoadMoreButton,} from './js/render-functions.js';
+import {createGallery, clearGallery, toggleLoader, toggleLoadMoreButton,} from './js/render-functions.js';
 
 
 
@@ -33,8 +33,8 @@ async function onSearchSubmit (event) {
     query = searchText;
     page = 1;
     clearGallery();
-    hideLoadMoreButton();
-    showLoader();
+    toggleLoadMoreButton(false);
+    toggleLoader('top', true);
 
     try {
         const data = await getImagesByQuery(query, page, PER_PAGE);
@@ -53,12 +53,7 @@ async function onSearchSubmit (event) {
         createGallery(data.hits);
 
         const shown = page * PER_PAGE;
-
-        if (totalHits > shown) {
-            showLoadMoreButton();
-        } else {
-            hideLoadMoreButton();
-        } 
+        toggleLoadMoreButton(totalHits > shown);
         
     } catch (err) {
         iziToast.error({
@@ -69,18 +64,15 @@ async function onSearchSubmit (event) {
         });
 
     } finally {
-        setTimeout(() => {
-            hideLoader();
-        }, 6000);
-        
+        toggleLoader('top', false);
         form.reset();
     }
 }
 
 async function onLoadMore() {
     page += 1;
-    hideLoadMoreButton();
-    showLoader();
+    toggleLoadMoreButton(false);
+    toggleLoader('bottom', true);
 
     try {
         const data = await getImagesByQuery(query, page, PER_PAGE);
@@ -90,13 +82,13 @@ async function onLoadMore() {
 
         const shown = page * PER_PAGE;
         if (shown >= totalHits) {
-            hideLoadMoreButton();
+            toggleLoadMoreButton(false);
             iziToast.info({
                 message: "We're sorry, but you've reached the end of search results.",
                 position: 'topRight',
             });  
         } else {
-            showLoadMoreButton();
+            toggleLoadMoreButton(true);
         }
 
     } catch (err) {
@@ -107,9 +99,7 @@ async function onLoadMore() {
             class: 'toast-error',
         });
     } finally {
-        setTimeout(() => {
-            hideLoader();
-        }, 6000);
+        toggleLoader('bottom', false);
     }
 }
 
