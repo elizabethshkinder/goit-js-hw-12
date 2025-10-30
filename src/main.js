@@ -54,6 +54,13 @@ async function onSearchSubmit (event) {
 
         const shown = page * PER_PAGE;
         toggleLoadMoreButton(totalHits > shown);
+
+        if (totalHits <= shown) {
+            iziToast.info({
+                message: "We're sorry, but you've reached the end of search results.",
+                position: 'topRight',
+            });
+        }
         
     } catch (err) {
         iziToast.error({
